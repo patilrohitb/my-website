@@ -418,23 +418,27 @@
 
                 <div class="bg-cardDark border border-subtleBorder p-8 rounded-2xl">
                     <h3 class="text-xl font-bold mb-6">Send a Direct Message</h3>
-                    <form onsubmit="event.preventDefault(); alert('Thank you for reaching out! Your message has been simulated.');" class="space-y-4">
-                        <div>
-                            <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Your Name</label>
-                            <input type="text" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="John Doe">
-                        </div>
-                        <div>
-                            <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Email Address</label>
-                            <input type="email" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="john@example.com">
-                        </div>
-                        <div>
-                            <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Message</label>
-                            <textarea rows="4" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="Hello Rohit, let's discuss a hardware/AI project..."></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-accent hover:bg-red-600 text-white font-mono text-xs uppercase tracking-wider py-3.5 rounded-lg font-medium transition-colors">
-                            Send Inquiry
-                        </button>
-                    </form>
+                    <form action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
+    <!-- Paste your Web3Forms key inside the value quotes below -->
+    <input type="hidden" name="access_key" value="b525feef-3328-48cc-8a32-34b71c5439da">
+    <input type="hidden" name="subject" value="New Inquiry from Portfolio Website">
+    
+    <div>
+        <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Your Name</label>
+        <input type="text" name="name" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="John Doe">
+    </div>
+    <div>
+        <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Email Address</label>
+        <input type="email" name="email" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="john@example.com">
+    </div>
+    <div>
+        <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Message</label>
+        <textarea name="message" rows="4" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="Hello Rohit, let's discuss a hardware/AI project..."></textarea>
+    </div>
+    <button type="submit" class="w-full bg-accent hover:bg-red-600 text-white font-mono text-xs uppercase tracking-wider py-3.5 rounded-lg font-medium transition-colors">
+        Send Inquiry
+    </button>
+</form>
                 </div>
             </div>
 

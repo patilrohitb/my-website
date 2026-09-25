@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rohit Patil — Systems Specialist & Hardware Engineer</title>
+    <title data-i18n="title">Rohit Patil — Systems Specialist & Hardware Engineer</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -16,6 +16,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <script>
+        if (localStorage.theme === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -37,17 +43,23 @@
     </script>
     <style>
         body {
-            background-color: #0A0A0A;
-            color: #F3F4F6;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
+        html.dark body {
+            background-color: #0A0A0A;
+            color: #F3F4F6;
+        }
+        html:not(.dark) body {
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
+        
         ::-webkit-scrollbar {
             width: 6px;
         }
-        ::-webkit-scrollbar-track {
-            background: #0A0A0A;
-        }
+        html.dark ::-webkit-scrollbar-track { background: #0A0A0A; }
+        html:not(.dark) ::-webkit-scrollbar-track { background: #F1F5F9; }
         ::-webkit-scrollbar-thumb {
             background: #333333;
             border-radius: 3px;
@@ -58,16 +70,38 @@
         #loader {
             transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out;
         }
-        @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-            /* Add this right here */
-    #canvas-container canvas {
-        touch-action: pan-y;
+        #canvas-container canvas {
+            touch-action: pan-y;
+        }
+
+        /* PRINT STYLESHEET / RESUME MODE */
+        @media print {
+            #loader, #custom-cursor, header, footer, #canvas-container, .group-hover\:border-accent, button {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 12pt;
+            }
+            section {
+                padding: 1rem 0 !important;
+                border: none !important;
+            }
+            .dark\:bg-cardDark, .bg-white, .dark\:bg-bgDark {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                color: black !important;
+            }
+            .text-accent {
+                color: #000 !important;
+                text-decoration: underline;
+            }
         }
     </style>
 </head>
-<body class="bg-bgDark text-charcoal antialiased selection:bg-accent selection:text-white">
+<body class="antialiased selection:bg-accent selection:text-white transition-colors duration-300">
 
     <!-- LOADING SCREEN ANIMATION -->
     <div id="loader" class="fixed inset-0 z-50 bg-[#050505] flex flex-col items-center justify-center font-mono">
@@ -85,26 +119,42 @@
     <!-- Custom Cursor Follower -->
     <div id="custom-cursor" class="fixed top-0 left-0 w-8 h-8 rounded-full border border-accent pointer-events-none z-40 transition-transform duration-100 ease-out hidden lg:block -translate-x-1/2 -translate-y-1/2"></div>
 
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 translate-y-24 opacity-0 transition-all duration-300 font-mono text-xs bg-cardDark text-white border border-accent px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+        <i data-lucide="check-circle-2" class="w-4 h-4 text-accent"></i>
+        <span id="toast-message">Message routed successfully!</span>
+    </div>
+
     <!-- HEADER & NAVIGATION -->
-    <header class="fixed top-0 left-0 w-full z-30 bg-bgDark/85 backdrop-blur-md border-b border-subtleBorder transition-all duration-300">
+    <header class="fixed top-0 left-0 w-full z-30 dark:bg-bgDark/85 bg-white/85 backdrop-blur-md border-b dark:border-subtleBorder border-gray-200 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <a href="#" class="font-extrabold text-xl tracking-tight uppercase text-white">Rohit Patil<span class="text-accent">.</span></a>
+                <a href="#" class="font-extrabold text-xl tracking-tight uppercase dark:text-white text-gray-900">Rohit Patil<span class="text-accent">.</span></a>
             </div>
 
-            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-                <a href="#experience" class="hover:text-accent transition-colors">Experience</a>
-                <a href="#competencies" class="hover:text-accent transition-colors">Expertise</a>
-                <a href="#skills" class="hover:text-accent transition-colors">Skills</a>
-                <a href="#contact" class="hover:text-accent transition-colors">Contact</a>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium dark:text-gray-300 text-gray-600">
+                <a href="#experience" class="hover:text-accent transition-colors" data-i18n="nav_experience">Experience</a>
+                <a href="#competencies" class="hover:text-accent transition-colors" data-i18n="nav_expertise">Expertise</a>
+                <a href="#skills" class="hover:text-accent transition-colors" data-i18n="nav_skills">Skills</a>
+                <a href="#contact" class="hover:text-accent transition-colors" data-i18n="nav_contact">Contact</a>
             </nav>
 
-            <div class="flex items-center gap-4">
-                <div class="hidden sm:flex items-center text-xs font-mono bg-cardDark border border-subtleBorder px-2.5 py-1.5 rounded space-x-1 text-gray-300">
-                    <span class="text-accent font-bold">EN</span><span>/</span><span>HI</span><span>/</span><span>MR</span>
+            <div class="flex items-center gap-3">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" aria-label="Toggle Theme" class="p-2.5 rounded-full dark:bg-cardDark bg-gray-100 dark:border-subtleBorder border border-gray-200 dark:text-yellow-400 text-slate-700 hover:text-accent dark:hover:text-accent transition-colors">
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+                </button>
+
+                <!-- Language Switcher -->
+                <div class="flex items-center text-xs font-mono dark:bg-cardDark bg-gray-100 dark:border-subtleBorder border border-gray-200 p-1 rounded space-x-1 dark:text-gray-300 text-gray-700">
+                    <button onclick="switchLanguage('en')" id="lang-en" class="px-2 py-1 rounded bg-accent text-white font-bold transition-colors">EN</button>
+                    <button onclick="switchLanguage('hi')" id="lang-hi" class="px-2 py-1 rounded hover:text-accent transition-colors">HI</button>
+                    <button onclick="switchLanguage('mr')" id="lang-mr" class="px-2 py-1 rounded hover:text-accent transition-colors">MR</button>
                 </div>
-                <a href="#contact" class="bg-white text-black hover:bg-accent hover:text-white px-5 py-2.5 rounded-full text-xs font-mono font-medium tracking-wide transition-all duration-300 flex items-center gap-2 group">
-                    <span>Let's Talk</span>
+
+                <a href="#contact" class="dark:bg-white bg-black dark:text-black text-white hover:bg-accent hover:text-white px-5 py-2.5 rounded-full text-xs font-mono font-medium tracking-wide transition-all duration-300 flex items-center gap-2 group hidden sm:flex">
+                    <span data-i18n="lets_talk">Let's Talk</span>
                     <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
@@ -112,25 +162,25 @@
     </header>
 
     <!-- HERO SECTION WITH INTERACTIVE 3D TORUS ON RIGHT -->
-    <section class="pt-36 pb-20 md:pt-48 md:pb-32 border-b border-subtleBorder relative overflow-hidden">
+    <section class="pt-36 pb-20 md:pt-48 md:pb-32 dark:border-b border-b dark:border-subtleBorder border-gray-200 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 <div class="lg:col-span-7">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 rounded-full text-accent font-mono text-xs uppercase mb-6">
                         <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                        IT Infrastructure & Hardware Engineering
+                        <span data-i18n="hero_badge">IT Infrastructure & Hardware Engineering</span>
                     </div>
-                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] mb-8 text-white">
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] mb-8 dark:text-white text-gray-900" data-i18n="hero_title">
                         BUILDING <span class="text-accent">HARDWARE SYSTEMS</span> & LOCAL LLM WORKFLOWS.
                     </h1>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start pt-6 border-t border-subtleBorder">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start pt-6 border-t dark:border-subtleBorder border-gray-200">
                         <div>
-                            <div class="font-mono text-xs text-gray-500 uppercase mb-1">Experience Level</div>
-                            <div class="text-2xl font-bold text-white">4+ Years</div>
-                            <div class="text-xs text-gray-400 mt-1">PC Hardware, OS & Infrastructure</div>
+                            <div class="font-mono text-xs dark:text-gray-500 text-gray-400 uppercase mb-1" data-i18n="exp_level_title">Experience Level</div>
+                            <div class="text-2xl font-bold dark:text-white text-gray-900" data-i18n="exp_level_value">4+ Years</div>
+                            <div class="text-xs dark:text-gray-400 text-gray-500 mt-1" data-i18n="exp_level_sub">PC Hardware, OS & Infrastructure</div>
                         </div>
                         <div class="md:col-span-2">
-                            <p class="text-base text-gray-300 leading-relaxed mb-4">
+                            <p class="text-base dark:text-gray-300 text-gray-600 leading-relaxed mb-4" data-i18n="hero_desc">
                                 Systems specialist with deep hands-on expertise spanning PC component architecture, custom builds, local AI/LLM runners, UI/UX interaction tuning, and robust Linux/Windows IT administration.
                             </p>
                             <div class="flex items-center gap-4">
@@ -143,20 +193,20 @@
                 </div>
 
                 <!-- Right Interactive 3D Torus Canvas Container -->
-                <div class="lg:col-span-5 h-[280px] relative flex items-center justify-center bg-cardDark/40 border border-subtleBorder rounded-2xl overflow-hidden group">
+                <div class="lg:col-span-5 h-[280px] relative flex items-center justify-center dark:bg-cardDark/40 bg-gray-100/60 border dark:border-subtleBorder border-gray-200 rounded-2xl overflow-hidden group">
                     <div class="absolute top-4 left-4 z-10 font-mono text-[10px] text-accent uppercase tracking-widest pointer-events-none flex items-center gap-2">
                         <span class="w-1.5 h-1.5 rounded-full bg-accent animate-ping"></span>
                         // INTERACTIVE_SYSTEM_TORUS.3D
                     </div>
                     <div id="canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing flex items-center justify-center"></div>
-                    <div class="absolute bottom-4 right-4 z-10 font-mono text-[10px] text-accent uppercase tracking-widest pointer-events-none bg-black/80 px-3 py-1.5 rounded border border-accent/30 shadow-lg">
+                    <div class="absolute bottom-4 right-4 z-10 font-mono text-[10px] text-accent uppercase tracking-widest pointer-events-none dark:bg-black/80 bg-white/80 px-3 py-1.5 rounded border dark:border-accent/30 border-gray-200 shadow-lg" data-i18n="drag_rotate">
                         DRAG TO ROTATE
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mt-20 py-4 bg-cardDark border-y border-subtleBorder text-gray-300 overflow-hidden whitespace-nowrap flex select-none">
+        <div class="mt-20 py-4 dark:bg-cardDark bg-gray-100 dark:border-y border-y dark:border-subtleBorder border-gray-200 dark:text-gray-300 text-gray-600 overflow-hidden whitespace-nowrap flex select-none">
             <div class="inline-block animate-[marquee_25s_linear_infinite] font-mono text-xs tracking-widest uppercase flex items-center gap-8">
                 <span>// PC HARDWARE & CUSTOM RIG BUILDING</span>
                 <span class="text-accent">•</span>
@@ -173,182 +223,190 @@
     </section>
 
     <!-- PROFESSIONAL EXPERIENCE SECTION -->
-    <section id="experience" class="py-24 border-b border-subtleBorder">
+    <section id="experience" class="py-24 dark:border-b border-b dark:border-subtleBorder border-gray-200">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
                 <div>
-                    <span class="font-mono text-xs text-accent uppercase tracking-wider block mb-2">// Career History</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Professional Experience</h2>
+                    <span class="font-mono text-xs text-accent uppercase tracking-wider block mb-2" data-i18n="career_history_sub">// Career History</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight dark:text-white text-gray-900" data-i18n="career_history_title">Professional Experience</h2>
                 </div>
-                <div class="mt-4 md:mt-0 font-mono text-xs text-gray-500">
+                <div class="mt-4 md:mt-0 font-mono text-xs dark:text-gray-500 text-gray-400">
                     2023 – Present
                 </div>
             </div>
 
-            <div class="bg-cardDark border border-subtleBorder p-8 md:p-12 rounded-2xl shadow-sm relative overflow-hidden">
+            <div class="dark:bg-cardDark bg-white dark:border-subtleBorder border border-gray-200 p-8 md:p-12 rounded-2xl shadow-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-bl-full pointer-events-none"></div>
                 
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8 pb-6 border-b border-subtleBorder">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8 pb-6 border-b dark:border-subtleBorder border-gray-200">
                     <div>
-                        <span class="font-mono text-xs text-accent uppercase font-bold tracking-wider mb-1 block">Specialized Role</span>
-                        <h3 class="text-2xl sm:text-3xl font-bold text-white">Systems, Hardware & Infrastructure Specialist</h3>
+                        <span class="font-mono text-xs text-accent uppercase font-bold tracking-wider mb-1 block" data-i18n="role_subtitle">Specialized Role</span>
+                        <h3 class="text-2xl sm:text-3xl font-bold dark:text-white text-gray-900" data-i18n="role_title">Systems, Hardware & Infrastructure Specialist</h3>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="px-3 py-1 bg-accent text-white font-mono text-xs rounded-full font-medium">2023 – Present</span>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm dark:text-gray-300 text-gray-600">
                     <div class="space-y-4">
                         <div class="flex items-start gap-3">
                             <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
-                            <p>Architected, built, and tuned high-performance computer hardware configurations, analyzing component compatibility across CPU, motherboard chipsets, memory profiles, and cooling thresholds.</p>
+                            <p data-i18n="exp_1">Architected, built, and tuned high-performance computer hardware configurations, analyzing component compatibility across CPU, motherboard chipsets, memory profiles, and cooling thresholds.</p>
                         </div>
                         <div class="flex items-start gap-3">
                             <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
-                            <p>Deployed and managed local open-weight Large Language Models (LLMs) via Ollama and LM Studio environments on localized desktop and mini-PC rigs.</p>
+                            <p data-i18n="exp_2">Deployed and managed local open-weight Large Language Models (LLMs) via Ollama and LM Studio environments on localized desktop and mini-PC rigs.</p>
                         </div>
                         <div class="flex items-start gap-3">
                             <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
-                            <p>Executed comprehensive system diagnostics, BIOS parameter tuning, power limit/TDP management, and multi-OS installations (Windows, Arch Linux, Debian, Ubuntu).</p>
+                            <p data-i18n="exp_3">Executed comprehensive system diagnostics, BIOS parameter tuning, power limit/TDP management, and multi-OS installations (Windows, Arch Linux, Debian, Ubuntu).</p>
                         </div>
                         <div class="flex items-start gap-3">
                             <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
-                            <p>Maintained physical hardware inventory, performing component-level troubleshooting, preventive maintenance, and thermal paste management to ensure zero operational downtime.</p>
+                            <p data-i18n="exp_4">Maintained physical hardware inventory, performing component-level troubleshooting, preventive maintenance, and thermal paste management to ensure zero operational downtime.</p>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-start gap-3">
                             <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
-                            <p>Integrated UI/UX principles and design layouts to optimize application interfaces, mobile case concepts, and digital product presentation workflows.</p>
+                            <p data-i18n="exp_5">Integrated UI/UX principles and design layouts to optimize application interfaces, mobile case concepts, and digital product presentation workflows.</p>
                         </div>
                         <div class="flex items-start gap-3">
                             <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
-                            <p>Managed enterprise IT infrastructure components including structured network cabling, rack patch panels, UPS battery backups, and server room environmental controls.</p>
+                            <p data-i18n="exp_6">Managed enterprise IT infrastructure components including structured network cabling, rack patch panels, UPS battery backups, and server room environmental controls.</p>
                         </div>
                         <div class="flex items-start gap-3">
                             <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
-                            <p>Configured performance tuning profiles and custom thermal strategies for mini-PCs (e.g., ASUS PN51 series) using advanced utility scripts and power tuners.</p>
+                            <p data-i18n="exp_7">Configured performance tuning profiles and custom thermal strategies for mini-PCs (e.g., ASUS PN51 series) using advanced utility scripts and power tuners.</p>
                         </div>
                         <div class="flex items-start gap-3">
                             <i data-lucide="check-circle-2" class="w-5 h-5 text-accent shrink-0 mt-0.5"></i>
-                            <p>Combined deep technical problem-solving with empathy-driven user interaction to handle troubleshooting requests smoothly and effectively.</p>
+                            <p data-i18n="exp_8">Combined deep technical problem-solving with empathy-driven user interaction to handle troubleshooting requests smoothly and effectively.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-subtleBorder flex flex-wrap gap-2">
-                    <span class="px-2.5 py-1 bg-subtleBorder font-mono text-[11px] text-gray-300 rounded">PC Hardware & Custom Builds</span>
-                    <span class="px-2.5 py-1 bg-subtleBorder font-mono text-[11px] text-gray-300 rounded">Local LLMs (Ollama / LM Studio)</span>
-                    <span class="px-2.5 py-1 bg-subtleBorder font-mono text-[11px] text-gray-300 rounded">UI/UX & Visual Layouts</span>
-                    <span class="px-2.5 py-1 bg-subtleBorder font-mono text-[11px] text-gray-300 rounded">IT Infrastructure & Network Management</span>
+                <div class="mt-8 pt-6 border-t dark:border-subtleBorder border-gray-200 flex flex-wrap gap-2 font-mono text-[11px]">
+                    <span class="px-2.5 py-1 dark:bg-subtleBorder bg-gray-100 dark:text-gray-300 text-gray-700 rounded">PC Hardware & Custom Builds</span>
+                    <span class="px-2.5 py-1 dark:bg-subtleBorder bg-gray-100 dark:text-gray-300 text-gray-700 rounded">Local LLMs (Ollama / LM Studio)</span>
+                    <span class="px-2.5 py-1 dark:bg-subtleBorder bg-gray-100 dark:text-gray-300 text-gray-700 rounded">UI/UX & Visual Layouts</span>
+                    <span class="px-2.5 py-1 dark:bg-subtleBorder bg-gray-100 dark:text-gray-300 text-gray-700 rounded">IT Infrastructure & Network Management</span>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- TECHNICAL & DOMAIN COMPETENCIES -->
-    <section id="competencies" class="py-24 border-b border-subtleBorder bg-cardDark/50">
+    <section id="competencies" class="py-24 dark:border-b border-b dark:border-subtleBorder border-gray-200 dark:bg-cardDark/50 bg-gray-50/50">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="mb-16">
-                <span class="font-mono text-xs text-accent uppercase tracking-wider block mb-2">// Core Competencies</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Hardware, LLM & Design Expertise</h2>
+            <div class="mb-16 flex flex-col md:flex-row md:items-end justify-between">
+                <div>
+                    <span class="font-mono text-xs text-accent uppercase tracking-wider block mb-2" data-i18n="comp_sub">// Core Competencies</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight dark:text-white text-gray-900" data-i18n="comp_title">Hardware, LLM & Design Expertise</h2>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Card 1 -->
-                <div class="border border-subtleBorder p-8 rounded-xl bg-cardDark hover:border-accent transition-colors group">
-                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6 group-hover:bg-accent group-hover:text-white transition-colors">
+                <div class="border dark:border-subtleBorder border-gray-200 p-8 rounded-xl dark:bg-cardDark bg-white hover:border-accent transition-all">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6">
                         <i data-lucide="cpu" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">PC Hardware & Gadgets</h3>
-                    <p class="text-sm text-gray-400 mb-4 leading-relaxed">
+                    <h3 class="text-xl font-bold mb-3 dark:text-white text-gray-900">
+                        <span data-i18n="card1_title">PC Hardware & Gadgets</span>
+                    </h3>
+                    <p class="text-sm dark:text-gray-400 text-gray-600 mb-4 leading-relaxed" data-i18n="card1_desc">
                         Expertise in desktop/laptop hardware components, motherboard architectures (AM4, AM5), CPU tuning, RAM configuration, thermal dissipation, and custom peripheral setups.
                     </p>
-                    <div class="flex flex-wrap gap-1.5">
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Custom Rig Building</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Component Matching</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Mini-PC Optimization</span>
+                    <div class="flex flex-wrap gap-1.5 font-mono text-[11px]">
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Custom Rig Building</span>
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Component Matching</span>
                     </div>
                 </div>
 
                 <!-- Card 2 -->
-                <div class="border border-subtleBorder p-8 rounded-xl bg-cardDark hover:border-accent transition-colors group">
-                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6 group-hover:bg-accent group-hover:text-white transition-colors">
+                <div class="border dark:border-subtleBorder border-gray-200 p-8 rounded-xl dark:bg-cardDark bg-white hover:border-accent transition-all">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6">
                         <i data-lucide="bot" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Local LLMs & AI Workflows</h3>
-                    <p class="text-sm text-gray-400 mb-4 leading-relaxed">
+                    <h3 class="text-xl font-bold mb-3 dark:text-white text-gray-900">
+                        <span data-i18n="card2_title">Local LLMs & AI Workflows</span>
+                    </h3>
+                    <p class="text-sm dark:text-gray-400 text-gray-600 mb-4 leading-relaxed" data-i18n="card2_desc">
                         Deploying and running localized open-weight language models (DeepSeek, Qwen variants) via Ollama and LM Studio for offline inference, text generation, and automation workflows.
                     </p>
-                    <div class="flex flex-wrap gap-1.5">
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Ollama</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">LM Studio</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Open-Weight Models</span>
+                    <div class="flex flex-wrap gap-1.5 font-mono text-[11px]">
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Ollama</span>
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">LM Studio</span>
                     </div>
                 </div>
 
                 <!-- Card 3 -->
-                <div class="border border-subtleBorder p-8 rounded-xl bg-cardDark hover:border-accent transition-colors group">
-                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6 group-hover:bg-accent group-hover:text-white transition-colors">
+                <div class="border dark:border-subtleBorder border-gray-200 p-8 rounded-xl dark:bg-cardDark bg-white hover:border-accent transition-all">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6">
                         <i data-lucide="layout-template" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">UI/UX & Visual Design</h3>
-                    <p class="text-sm text-gray-400 mb-4 leading-relaxed">
+                    <h3 class="text-xl font-bold mb-3 dark:text-white text-gray-900">
+                        <span data-i18n="card3_title">UI/UX & Visual Design</span>
+                    </h3>
+                    <p class="text-sm dark:text-gray-400 text-gray-600 mb-4 leading-relaxed" data-i18n="card3_desc">
                         Structuring clean user interfaces, responsive layouts, aesthetic balance, and design concepts for digital products, mobile phone accessories, and presentation decks.
                     </p>
-                    <div class="flex flex-wrap gap-1.5">
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Interface Layouts</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Design Consistency</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Visual Styling</span>
+                    <div class="flex flex-wrap gap-1.5 font-mono text-[11px]">
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Interface Layouts</span>
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Design Consistency</span>
                     </div>
                 </div>
 
                 <!-- Card 4 -->
-                <div class="border border-subtleBorder p-8 rounded-xl bg-cardDark hover:border-accent transition-colors group">
-                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6 group-hover:bg-accent group-hover:text-white transition-colors">
+                <div class="border dark:border-subtleBorder border-gray-200 p-8 rounded-xl dark:bg-cardDark bg-white hover:border-accent transition-all">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6">
                         <i data-lucide="terminal" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Operating Systems & Linux</h3>
-                    <p class="text-sm text-gray-400 mb-4 leading-relaxed">
+                    <h3 class="text-xl font-bold mb-3 dark:text-white text-gray-900">
+                        <span data-i18n="card4_title">Operating Systems & Linux</span>
+                    </h3>
+                    <p class="text-sm dark:text-gray-400 text-gray-600 mb-4 leading-relaxed" data-i18n="card4_desc">
                         Advanced administrative control over multi-OS setups, Linux kernel tuning, filesystem configuration (BTRFS, EXT4), shell scripting, and hardware diagnostics.
                     </p>
-                    <div class="flex flex-wrap gap-1.5">
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Arch Linux / Debian</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Kernel Tweaking</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Shell Scripting</span>
+                    <div class="flex flex-wrap gap-1.5 font-mono text-[11px]">
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Arch Linux / Debian</span>
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Kernel Tweaking</span>
                     </div>
                 </div>
 
                 <!-- Card 5 -->
-                <div class="border border-subtleBorder p-8 rounded-xl bg-cardDark hover:border-accent transition-colors group">
-                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6 group-hover:bg-accent group-hover:text-white transition-colors">
+                <div class="border dark:border-subtleBorder border-gray-200 p-8 rounded-xl dark:bg-cardDark bg-white hover:border-accent transition-all">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6">
                         <i data-lucide="shield-check" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">IT Infrastructure & Support</h3>
-                    <p class="text-sm text-gray-400 mb-4 leading-relaxed">
+                    <h3 class="text-xl font-bold mb-3 dark:text-white text-gray-900">
+                        <span data-i18n="card5_title">IT Infrastructure & Support</span>
+                    </h3>
+                    <p class="text-sm dark:text-gray-400 text-gray-600 mb-4 leading-relaxed" data-i18n="card5_desc">
                         Google IT Support certified with professional background in network cabling, UPS power management, storage security, and cross-platform technical troubleshooting.
                     </p>
-                    <div class="flex flex-wrap gap-1.5">
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Google IT Cert</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Network & Power</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Troubleshooting</span>
+                    <div class="flex flex-wrap gap-1.5 font-mono text-[11px]">
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Google IT Cert</span>
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Network & Power</span>
                     </div>
                 </div>
 
                 <!-- Card 6 -->
-                <div class="border border-subtleBorder p-8 rounded-xl bg-cardDark hover:border-accent transition-colors group">
-                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6 group-hover:bg-accent group-hover:text-white transition-colors">
+                <div class="border dark:border-subtleBorder border-gray-200 p-8 rounded-xl dark:bg-cardDark bg-white hover:border-accent transition-all">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center text-accent mb-6">
                         <i data-lucide="languages" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Localization & Communication</h3>
-                    <p class="text-sm text-gray-400 mb-4 leading-relaxed">
+                    <h3 class="text-xl font-bold mb-3 dark:text-white text-gray-900">
+                        <span data-i18n="card6_title">Localization & Communication</span>
+                    </h3>
+                    <p class="text-sm dark:text-gray-400 text-gray-600 mb-4 leading-relaxed" data-i18n="card6_desc">
                         Fluent multilingual capabilities across English, Marathi, and Hindi, enabling seamless technical documentation translation, support, and collaboration.
                     </p>
-                    <div class="flex flex-wrap gap-1.5">
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">English</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Marathi</span>
-                        <span class="font-mono text-[11px] bg-subtleBorder px-2 py-0.5 rounded text-gray-300">Hindi</span>
+                    <div class="flex flex-wrap gap-1.5 font-mono text-[11px]">
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">English</span>
+                        <span class="dark:bg-subtleBorder bg-gray-100 px-2 py-0.5 rounded dark:text-gray-300 text-gray-700">Marathi / Hindi</span>
                     </div>
                 </div>
             </div>
@@ -356,45 +414,45 @@
     </section>
 
     <!-- SKILLS MATRIX & TECHNICAL SUMMARY -->
-    <section id="skills" class="py-24 border-b border-subtleBorder">
+    <section id="skills" class="py-24 dark:border-b border-b dark:border-subtleBorder border-gray-200">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
-                    <span class="font-mono text-xs text-accent uppercase tracking-wider block mb-2">// Technical Toolkit</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6 text-white">Structured Skills Breakdown</h2>
-                    <p class="text-gray-300 mb-6 leading-relaxed">
+                    <span class="font-mono text-xs text-accent uppercase tracking-wider block mb-2" data-i18n="skills_sub">// Technical Toolkit</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6 dark:text-white text-gray-900" data-i18n="skills_title">Structured Skills Breakdown</h2>
+                    <p class="dark:text-gray-300 text-gray-600 mb-6 leading-relaxed" data-i18n="skills_desc">
                         My skill set fuses core hardware engineering and PC building with cutting-edge local AI model workflows and thoughtful UI/UX interaction design.
                     </p>
                     <div class="space-y-4 font-mono text-xs">
-                        <div class="p-4 bg-cardDark border border-subtleBorder rounded-lg flex items-center justify-between">
-                            <span class="font-bold text-gray-300">Hardware & Gadgets</span>
-                            <span class="text-accent">Custom PC Builds, Mini-PCs, Thermal Tuning</span>
+                        <div class="p-4 dark:bg-cardDark bg-white border dark:border-subtleBorder border-gray-200 rounded-lg flex items-center justify-between">
+                            <span class="font-bold dark:text-gray-300 text-gray-700" data-i18n="skill_row1_title">Hardware & Gadgets</span>
+                            <span class="text-accent" data-i18n="skill_row1_desc">Custom PC Builds, Mini-PCs, Thermal Tuning</span>
                         </div>
-                        <div class="p-4 bg-cardDark border border-subtleBorder rounded-lg flex items-center justify-between">
-                            <span class="font-bold text-gray-300">AI & LLM Integration</span>
-                            <span class="text-accent">Ollama, LM Studio, Prompt Engineering</span>
+                        <div class="p-4 dark:bg-cardDark bg-white border dark:border-subtleBorder border-gray-200 rounded-lg flex items-center justify-between">
+                            <span class="font-bold dark:text-gray-300 text-gray-700" data-i18n="skill_row2_title">AI & LLM Integration</span>
+                            <span class="text-accent" data-i18n="skill_row2_desc">Ollama, LM Studio, Prompt Engineering</span>
                         </div>
-                        <div class="p-4 bg-cardDark border border-subtleBorder rounded-lg flex items-center justify-between">
-                            <span class="font-bold text-gray-300">Design & Layouts</span>
-                            <span class="text-accent">UI/UX Principles, Visual Presentation</span>
+                        <div class="p-4 dark:bg-cardDark bg-white border dark:border-subtleBorder border-gray-200 rounded-lg flex items-center justify-between">
+                            <span class="font-bold dark:text-gray-300 text-gray-700" data-i18n="skill_row3_title">Design & Layouts</span>
+                            <span class="text-accent" data-i18n="skill_row3_desc">UI/UX Principles, Visual Presentation</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-cardDark border border-subtleBorder p-8 md:p-10 rounded-2xl relative">
+                <div class="dark:bg-cardDark bg-white border dark:border-subtleBorder border-gray-200 p-8 md:p-10 rounded-2xl relative shadow-sm">
                     <h3 class="text-xl font-bold mb-6 font-mono text-accent">// SYSTEM_PROFILE.LOG</h3>
-                    <div class="space-y-4 font-mono text-xs text-gray-300">
-                        <div class="flex justify-between border-b border-subtleBorder pb-2">
-                            <span class="text-gray-500">CERTIFICATION:</span>
-                            <span class="text-white">Google IT Support Professional</span>
+                    <div class="space-y-4 font-mono text-xs dark:text-gray-300 text-gray-600">
+                        <div class="flex justify-between border-b dark:border-subtleBorder border-gray-200 pb-2">
+                            <span class="dark:text-gray-500 text-gray-400" data-i18n="log_cert_label">CERTIFICATION:</span>
+                            <span class="dark:text-white text-gray-900" data-i18n="log_cert_value">Google IT Support Professional</span>
                         </div>
-                        <div class="flex justify-between border-b border-subtleBorder pb-2">
-                            <span class="text-gray-500">ELECTRONIC MAIL:</span>
-                            <span class="text-white">patilrohit.ba@gmail.com</span>
+                        <div class="flex justify-between border-b dark:border-subtleBorder border-gray-200 pb-2">
+                            <span class="dark:text-gray-500 text-gray-400" data-i18n="log_mail_label">ELECTRONIC MAIL:</span>
+                            <span class="dark:text-white text-gray-900">patilrohit.ba@gmail.com</span>
                         </div>
                         <div class="flex justify-between pt-2">
-                            <span class="text-gray-500">CORE FOCUS:</span>
-                            <span class="text-accent">Hardware + Local AI + UI/UX</span>
+                            <span class="dark:text-gray-500 text-gray-400" data-i18n="log_focus_label">CORE FOCUS:</span>
+                            <span class="text-accent" data-i18n="log_focus_value">Hardware + Local AI + UI/UX</span>
                         </div>
                     </div>
                 </div>
@@ -403,13 +461,13 @@
     </section>
 
     <!-- FOOTER & CONTACT SECTION -->
-    <footer id="contact" class="bg-black text-white pt-24 pb-12">
+    <footer id="contact" class="dark:bg-black bg-slate-900 text-white pt-24 pb-12">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 pb-20 border-b border-subtleBorder">
                 <div>
-                    <span class="font-mono text-xs text-accent uppercase tracking-wider block mb-2">// Get In Touch</span>
-                    <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6">Let's connect & collaborate.</h2>
-                    <p class="text-gray-400 max-w-md mb-8 leading-relaxed">
+                    <span class="font-mono text-xs text-accent uppercase tracking-wider block mb-2" data-i18n="contact_sub">// Get In Touch</span>
+                    <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6" data-i18n="contact_title">Let's connect & collaborate.</h2>
+                    <p class="text-gray-400 max-w-md mb-8 leading-relaxed" data-i18n="contact_desc">
                         Whether you need advanced PC hardware engineering, local LLM deployment, UI/UX optimization, or IT infrastructure management, let's discuss how I can add value.
                     </p>
                     <div class="space-y-4 font-mono text-sm">
@@ -420,33 +478,33 @@
                 </div>
 
                 <div class="bg-cardDark border border-subtleBorder p-8 rounded-2xl">
-                    <h3 class="text-xl font-bold mb-6">Send a Direct Message</h3>
-                    <form action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
-    <!-- Paste your Web3Forms key inside the value quotes below -->
-    <input type="hidden" name="access_key" value="b525feef-3328-48cc-8a32-34b71c5439da">
-    <input type="hidden" name="subject" value="New Inquiry from Portfolio Website">
-    
-    <div>
-        <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Your Name</label>
-        <input type="text" name="name" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="John Doe">
-    </div>
-    <div>
-        <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Email Address</label>
-        <input type="email" name="email" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="john@example.com">
-    </div>
-    <div>
-        <label class="block font-mono text-xs text-gray-400 uppercase mb-2">Message</label>
-        <textarea name="message" rows="4" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="Hello Rohit, let's discuss a hardware/AI project..."></textarea>
-    </div>
-    <button type="submit" class="w-full bg-accent hover:bg-red-600 text-white font-mono text-xs uppercase tracking-wider py-3.5 rounded-lg font-medium transition-colors">
-        Send Inquiry
-    </button>
-</form>
+                    <h3 class="text-xl font-bold mb-6" data-i18n="form_title">Send a Direct Message</h3>
+                    <form action="https://api.web3forms.com/submit" method="POST" id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        <!-- Paste your Web3Forms key inside the value quotes below -->
+                        <input type="hidden" name="access_key" value="b525feef-3328-48cc-8a32-34b71c5439da">
+                        <input type="hidden" name="subject" value="New Inquiry from Portfolio Website">
+                        
+                        <div>
+                            <label class="block font-mono text-xs text-gray-400 uppercase mb-2" data-i18n="form_name">Your Name</label>
+                            <input type="text" name="name" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block font-mono text-xs text-gray-400 uppercase mb-2" data-i18n="form_email">Email Address</label>
+                            <input type="email" name="email" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label class="block font-mono text-xs text-gray-400 uppercase mb-2" data-i18n="form_message">Message</label>
+                            <textarea name="message" rows="4" required class="w-full bg-black border border-subtleBorder rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-accent" placeholder="Hello Rohit, let's discuss a hardware/AI project..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-accent hover:bg-red-600 text-white font-mono text-xs uppercase tracking-wider py-3.5 rounded-lg font-medium transition-colors" data-i18n="form_btn">
+                            Send Inquiry
+                        </button>
+                    </form>
                 </div>
             </div>
 
             <div class="pt-12 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-gray-500 gap-4">
-                <div>© 2026 Rohit Patil. All rights reserved.</div>
+                <div data-i18n="footer_rights">© 2026 Rohit Patil. All rights reserved.</div>
                 <div class="flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>Local Time (IST): <span id="live-clock" class="text-gray-300"></span></span>
@@ -458,6 +516,255 @@
     <!-- Scripts -->
     <script>
         lucide.createIcons();
+
+        // Form Toast Notification Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 4000);
+
+            document.getElementById('contact-form').reset();
+        }
+
+        // Translations Dictionary
+        const translations = {
+            en: {
+                title: "Rohit Patil — Systems Specialist & Hardware Engineer",
+                nav_experience: "Experience",
+                nav_expertise: "Expertise",
+                nav_skills: "Skills",
+                nav_contact: "Contact",
+                lets_talk: "Let's Talk",
+                hero_badge: "IT Infrastructure & Hardware Engineering",
+                hero_title: 'BUILDING <span class="text-accent">HARDWARE SYSTEMS</span> & LOCAL LLM WORKFLOWS.',
+                exp_level_title: "Experience Level",
+                exp_level_value: "4+ Years",
+                exp_level_sub: "PC Hardware, OS & Infrastructure",
+                hero_desc: "Systems specialist with deep hands-on expertise spanning PC component architecture, custom builds, local AI/LLM runners, UI/UX interaction tuning, and robust Linux/Windows IT administration.",
+                drag_rotate: "DRAG TO ROTATE",
+                career_history_sub: "// Career History",
+                career_history_title: "Professional Experience",
+                role_subtitle: "Specialized Role",
+                role_title: "Systems, Hardware & Infrastructure Specialist",
+                exp_1: "Architected, built, and tuned high-performance computer hardware configurations, analyzing component compatibility across CPU, motherboard chipsets, memory profiles, and cooling thresholds.",
+                exp_2: "Deployed and managed local open-weight Large Language Models (LLMs) via Ollama and LM Studio environments on localized desktop and mini-PC rigs.",
+                exp_3: "Executed comprehensive system diagnostics, BIOS parameter tuning, power limit/TDP management, and multi-OS installations (Windows, Arch Linux, Debian, Ubuntu).",
+                exp_4: "Maintained physical hardware inventory, performing component-level troubleshooting, preventive maintenance, and thermal paste management to ensure zero operational downtime.",
+                exp_5: "Integrated UI/UX principles and design layouts to optimize application interfaces, mobile case concepts, and digital product presentation workflows.",
+                exp_6: "Managed enterprise IT infrastructure components including structured network cabling, rack patch panels, UPS battery backups, and server room environmental controls.",
+                exp_7: "Configured performance tuning profiles and custom thermal strategies for mini-PCs (e.g., ASUS PN51 series) using advanced utility scripts and power tuners.",
+                exp_8: "Combined deep technical problem-solving with empathy-driven user interaction to handle troubleshooting requests smoothly and effectively.",
+                comp_sub: "// Core Competencies",
+                comp_title: "Hardware, LLM & Design Expertise",
+                card1_title: "PC Hardware & Gadgets",
+                card1_desc: "Expertise in desktop/laptop hardware components, motherboard architectures (AM4, AM5), CPU tuning, RAM configuration, thermal dissipation, and custom peripheral setups.",
+                card2_title: "Local LLMs & AI Workflows",
+                card2_desc: "Deploying and running localized open-weight language models (DeepSeek, Qwen variants) via Ollama and LM Studio for offline inference, text generation, and automation workflows.",
+                card3_title: "UI/UX & Visual Design",
+                card3_desc: "Structuring clean user interfaces, responsive layouts, aesthetic balance, and design concepts for digital products, mobile phone accessories, and presentation decks.",
+                card4_title: "Operating Systems & Linux",
+                card4_desc: "Advanced administrative control over multi-OS setups, Linux kernel tuning, filesystem configuration (BTRFS, EXT4), shell scripting, and hardware diagnostics.",
+                card5_title: "IT Infrastructure & Support",
+                card5_desc: "Google IT Support certified with professional background in network cabling, UPS power management, storage security, and cross-platform technical troubleshooting.",
+                card6_title: "Localization & Communication",
+                card6_desc: "Fluent multilingual capabilities across English, Marathi, and Hindi, enabling seamless technical documentation translation, support, and collaboration.",
+                skills_sub: "// Technical Toolkit",
+                skills_title: "Structured Skills Breakdown",
+                skills_desc: "My skill set fuses core hardware engineering and PC building with cutting-edge local AI model workflows and thoughtful UI/UX interaction design.",
+                skill_row1_title: "Hardware & Gadgets",
+                skill_row1_desc: "Custom PC Builds, Mini-PCs, Thermal Tuning",
+                skill_row2_title: "AI & LLM Integration",
+                skill_row2_desc: "Ollama, LM Studio, Prompt Engineering",
+                skill_row3_title: "Design & Layouts",
+                skill_row3_desc: "UI/UX Principles, Visual Presentation",
+                log_cert_label: "CERTIFICATION:",
+                log_cert_value: "Google IT Support Professional",
+                log_mail_label: "ELECTRONIC MAIL:",
+                log_focus_label: "CORE FOCUS:",
+                log_focus_value: "Hardware + Local AI + UI/UX",
+                contact_sub: "// Get In Touch",
+                contact_title: "Let's connect & collaborate.",
+                contact_desc: "Whether you need advanced PC hardware engineering, local LLM deployment, UI/UX optimization, or IT infrastructure management, let's discuss how I can add value.",
+                form_title: "Send a Direct Message",
+                form_name: "Your Name",
+                form_email: "Email Address",
+                form_message: "Message",
+                form_btn: "Send Inquiry",
+                footer_rights: "© 2026 Rohit Patil. All rights reserved."
+            },
+            hi: {
+                title: "रोहित पाटील — सिस्टम स्पेशलिस्ट और हार्डवेयर इंजीनियर",
+                nav_experience: "अनुभव",
+                nav_expertise: "विशेषज्ञता",
+                nav_skills: "कौशल",
+                nav_contact: "संपर्क",
+                lets_talk: "बातचीत करें",
+                hero_badge: "आईटी बुनियादी ढांचा और हार्डवेयर इंजीनियरिंग",
+                hero_title: 'बिल्डिंग <span class="text-accent">हार्डवेयर सिस्टम्स</span> और लोकल LLM वर्कफ़्लो।',
+                exp_level_title: "अनुभव स्तर",
+                exp_level_value: "4+ वर्ष",
+                exp_level_sub: "पीसी हार्डवेयर, ओएस और बुनियादी ढांचा",
+                hero_desc: "सिस्टम विशेषज्ञ जिनके पास पीसी घटक वास्तुकला, कस्टम बिल्ड, स्थानीय एआई/एलएलएम रनर, यूआई/यूएक्स ट्यूनिंग और मजबूत लिनक्स/विंडोज आईटी प्रशासन में गहरा व्यावहारिक अनुभव है।",
+                drag_rotate: "घुमाने के लिए खींचें",
+                career_history_sub: "// करियर इतिहास",
+                career_history_title: "पेशेवर अनुभव",
+                role_subtitle: "विशेष भूमिका",
+                role_title: "सिस्टम, हार्डवेयर और इंफ्रास्ट्रक्चर विशेषज्ञ",
+                exp_1: "सीपीयू, मदरबोर्ड चिपसेट, मेमोरी प्रोफाइल और कूलिंग थ्रेशोल्ड में घटक संगतता का विश्लेषण करते हुए उच्च-प्रदर्शन कंप्यूटर हार्डवेयर कॉन्फ़िगरेशन को आर्किटेक्ट, निर्मित और ट्यून किया।",
+                exp_2: "स्थानीय डेस्कटॉप और मिनी-पीसी रिग्स पर ओलामा और एलएम स्टूडियो वातावरण के माध्यम से स्थानीय ओपन-वेट लार्ज लैंग्वेज मॉडल (LLMs) को तैनात और प्रबंधित किया।",
+                exp_3: "व्यापक सिस्टम डायग्नोस्टिक्स, BIOS पैरामीटर ट्यूनिंग, पावर लिमिट/TDP प्रबंधन और बहु-OS इंस्टॉलेशन (Windows, Arch Linux, Debian, Ubuntu) निष्पादित किए।",
+                exp_4: "शून्य परिचालन डाउनटाइम सुनिश्चित करने के लिए भौतिक हार्डवेयर इन्वेंट्री बनाए रखी, घटक-स्तर की समस्या निवारण, निवारक रखरखाव और थर्मल पेस्ट प्रबंधन किया।",
+                exp_5: "एप्लिकेशन इंटरफेस, मोबाइल केस अवधारणाओं और डिजिटल उत्पाद प्रस्तुति वर्कफ़्लो को अनुकूलित करने के लिए UI/UX सिद्धांतों और डिज़ाइन लेआउट को एकीकृत किया।",
+                exp_6: "संरचित नेटवर्क केबलिंग, रैक पैच पैनल, यूपीएस बैटरी बैकअप और सर्वर रूम पर्यावरण नियंत्रण सहित उद्यम आईटी बुनियादी ढांचा घटकों का प्रबंधन किया।",
+                exp_7: "उन्नत उपयोगिता स्क्रिप्ट और पावर ट्यूनर का उपयोग करके मिनी-पीसी (जैसे ASUS PN51 श्रृंखला) के लिए प्रदर्शन ट्यूनिंग प्रोफाइल और कस्टम थर्मल रणनीतियों को कॉन्फ़िगर किया।",
+                exp_8: "समस्या निवारण अनुरोधों को सुचारू रूप से और प्रभावी ढंग से संभालने के लिए सहानुभूति-संचालित उपयोगकर्ता इंटरैक्शन के साथ गहरी तकनीकी समस्या-समाधान को जोड़ा।",
+                comp_sub: "// मुख्य क्षमताएं",
+                comp_title: "हार्डवेयर, एलएलएम और डिजाइन विशेषज्ञता",
+                card1_title: "पीसी हार्डवेयर और गैजेट्स",
+                card1_desc: "डेस्कटॉप/लैपटॉप हार्डवेयर घटकों, मदरबोर्ड आर्किटेक्चर (AM4, AM5), सीपीयू ट्यूनिंग, रैम कॉन्फ़िगरेशन, थर्मल अपव्यय और कस्टम परिधीय सेटअप में विशेषज्ञता।",
+                card2_title: "स्थानीय एलएलएम और एआई वर्कफ़्लो",
+                card2_desc: "ऑफ़लाइन अनुमान, पाठ पीढ़ी और स्वचालन वर्कफ़्लो के लिए ओलामा और एलएम स्टूडियो के माध्यम से स्थानीय ओपन-वेट भाषा मॉडल (DeepSeek, Qwen वेरिएंट) को तैनात करना और चलाना।",
+                card3_title: "UI/UX और विजुअल डिजाइन",
+                card3_desc: "डिजिटल उत्पादों, मोबाइल फोन सहायक उपकरण और प्रस्तुति डेक के लिए स्वच्छ यूजर इंटरफेस, उत्तरदायी लेआउट, सौंदर्य संतुलन और डिजाइन अवधारणाओं की संरचना करना।",
+                card4_title: "ऑपरेटिंग सिस्टम और लिनक्स",
+                card4_desc: "बहु-OS सेटअप, लिनक्स कर्नेल ट्यूनिंग, फ़ाइल सिस्टम कॉन्फ़िगरेशन (BTRFS, EXT4), शेल स्क्रिप्टिंग और हार्डवेयर डायग्नोस्टिक्स पर उन्नत प्रशासनिक नियंत्रण।",
+                card5_title: "आईटी बुनियादी ढांचा और सहायता",
+                card5_desc: "नेटवर्क केबलिंग, यूपीएस पावर मैनेजमेंट, स्टोरेज सिक्योरिटी और क्रॉस-प्लेटफॉर्म तकनीकी समस्या निवारण में पेशेवर पृष्ठभूमि के साथ Google आईटी सपोर्ट प्रमाणित।",
+                card6_title: "स्थानीयकरण और संचार",
+                card6_desc: "अंग्रेजी, मराठी और हिंदी में धाराप्रवाह बहुभाषी क्षमताएं, जो सहज तकनीकी दस्तावेज़ीकरण अनुवाद, समर्थन और सहयोग को सक्षम बनाती हैं।",
+                skills_sub: "// तकनीकी टूलकिट",
+                skills_title: "संरचित कौशल विवरण",
+                skills_desc: "मेरा कौशल सेट अत्याधुनिक स्थानीय एआई मॉडल वर्कफ़्लो और विचारशील UI/UX इंटरैक्शन डिज़ाइन के साथ मुख्य हार्डवेयर इंजीनियरिंग और पीसी बिल्डिंग को मिलाता है।",
+                skill_row1_title: "हार्डवेयर और गैजेट्स",
+                skill_row1_desc: "कस्टम पीसी बिल्ड, मिनी-पीसी, थर्मल ट्यूनिंग",
+                skill_row2_title: "एआई और एलएलएम एकीकरण",
+                skill_row2_desc: "Ollama, LM Studio, प्रॉम्प्ट इंजीनियरिंग",
+                skill_row3_title: "डिज़ाइन और लेआउट",
+                skill_row3_desc: "UI/UX सिद्धांत, दृश्य प्रस्तुति",
+                log_cert_label: "प्रमाणपत्र:",
+                log_cert_value: "Google IT सपोर्ट प्रोफेशनल",
+                log_mail_label: "ईमेल पता:",
+                log_focus_label: "मुख्य फोकस:",
+                log_focus_value: "हार्डवेयर + लोकल AI + UI/UX",
+                contact_sub: "// संपर्क करें",
+                contact_title: "आइए जुड़ें और सहयोग करें।",
+                contact_desc: "चाहे आपको उन्नत पीसी हार्डवेयर इंजीनियरिंग, स्थानीय एलएलएम परिनियोजन, यूआई/यूएक्स अनुकूलन, या आईटी बुनियादी ढांचा प्रबंधन की आवश्यकता हो, आइए चर्चा करें कि मैं कैसे मूल्य जोड़ सकता हूं।",
+                form_title: "प्रत्यक्ष संदेश भेजें",
+                form_name: "आपका नाम",
+                form_email: "ईमेल पता",
+                form_message: "संदेश",
+                form_btn: "पूछताछ भेजें",
+                footer_rights: "© 2026 रोहित पाटील। सर्वाधिकार सुरक्षित।"
+            },
+            mr: {
+                title: "रोहित पाटील — सिस्टम स्पेशालिस्ट आणि हार्डवेअर इंजिनियर",
+                nav_experience: "अनुभव",
+                nav_expertise: "कौशल्ये",
+                nav_skills: "प्राविण्य",
+                nav_contact: "संपर्क",
+                lets_talk: "संवाद साधा",
+                hero_badge: "आयटी इन्फ्रास्ट्रक्चर आणि हार्डवेअर इंजिनिअरिंग",
+                hero_title: 'बिल्डिंग <span class="text-accent">हार्डवेअर सिस्टम्स</span> आणि लोकल LLM वर्कफ्लो.',
+                exp_level_title: "अनुभवाची पातळी",
+                exp_level_value: "४+ वर्षे",
+                exp_level_sub: "पीसी हार्डवेअर, ओएस आणि इन्फ्रास्ट्रक्चर",
+                hero_desc: "पीसी कंपोनंट आर्किटेक्चर, कस्टम बिल्ड्स, लोकल एआय/एलएलएम रनर्स, युआय/युएक्स ट्यूनिंग आणि मजबूत लिनक्स/विंडोज आयटी प्रशासनाचा सखोल व्यावहारिक अनुभव असलेले सिस्टम स्पेशालिस्ट.",
+                drag_rotate: "फिगर फिरवण्यासाठी ड्रॅग करा",
+                career_history_sub: "// करिअर इतिहास",
+                career_history_title: "व्यावसायिक अनुभव",
+                role_subtitle: "विशेष भूमिका",
+                role_title: "सिस्टम, हार्डवेअर आणि इन्फ्रास्ट्रक्चर स्पेशालिस्ट",
+                exp_1: "सीपीयू, मदरबोर्ड चिपसेट, मेमरी प्रोफाईल आणि कूलिंग थ्रेशोल्डमधील कॉम्पोनंट सुसंगततेचे विश्लेषण करून उच्च-कार्यक्षमता असलेले संगणक हार्डवेअर कॉन्फिगरेशन तयार आणि ट्यून केले.",
+                exp_2: "स्थानिक डेस्कटॉप आणि मिनी-पीसी रिग्जवर ओलामा आणि एलएम स्टुडिओ वातावरणाद्वारे स्थानिक ओपन-वेट लँग्वेज मॉडेल्स (LLMs) तैनात आणि व्यवस्थापित केले.",
+                exp_3: "सर्वसमावेशक सिस्टम डायग्नोस्टिक्स, BIOS पॅरामीटर ट्यूनिंग, पॉवर लिमिट/TDP व्यवस्थापन आणि बहु-OS स्थापना (Windows, Arch Linux, Debian, Ubuntu) अंमलात आणल्या.",
+                exp_4: "कोणताही ऑपरेशनल डाऊनटाइम नाही याची खात्री करण्यासाठी भौतिक हार्डवेअर इन्व्हेंटरी राखली, कॉम्पोनंट-स्तरीय समस्यानिवारण, प्रतिबंधात्मक देखभाल आणि थर्मल पेस्ट व्यवस्थापन केले.",
+                exp_5: "अप्लिकेशन इंटरफेस, मोबाईल केस संकल्पना आणि डिजिटल उत्पादन प्रस्तुतीकरण वर्कफ्लो ऑप्टिमाइझ करण्यासाठी UI/UX तत्त्वे आणि डिझाइन लेआउट समाविष्ट केले.",
+                exp_6: "स्ट्रक्चर्ड नेटवर्क केबलिंग, रॅक पॅच पॅनेल, यूपीएस बॅटरी बॅकअप आणि सर्वर रूम पर्यावरण नियंत्रणासह एंटरप्राइझ आयटी इन्फ्रास्ट्रक्चर घटकांचे व्यवस्थापन केले.",
+                exp_7: "प्रगत युटिलिटी स्क्रिप्ट्स आणि पॉवर ट्यूनर्स वापरून मिनी-पीसी (उदा. ASUS PN51 मालिका) साठी परफॉर्मन्स ट्यूनिंग प्रोफाईल आणि कस्टम थर्मल धोरणे कॉन्फिगर केली.",
+                exp_8: "समस्यानिवारणाच्या विनंत्या सुरळीतपणे आणि प्रभावीपणे हाताळण्यासाठी सहानुभूती-संचालित वापरकर्ता परस्परसंवादासह सखोल तांत्रिक समस्या-निवारणाची जोड दिली.",
+                comp_sub: "// मुख्य कौशल्ये",
+                comp_title: "हार्डवेअर, एलएलएम आणि डिझाइन कौशल्य",
+                card1_title: "पीसी हार्डवेअर आणि गॅजेट्स",
+                card1_desc: "डेस्कटॉप/लॅपटॉप हार्डवेअर घटक, मदरबोर्ड आर्किटेक्चर (AM4, AM5), सीपीयू ट्यूनिंग, रॅम कॉन्फिगरेशन, थर्मल डिसीपेकेशन आणि कस्टम पेरिफेरल्स सेटअपमधील कौशल्य.",
+                card2_title: "लोकल एलएलएम आणि एआय वर्कफ्लो",
+                card2_desc: "ऑफलाइन इन्फरन्स, मजकूर निर्मिती आणि ऑटोमेशन वर्कफ्लोसाठी ओलामा आणि एलएम स्टुडिओद्वारे स्थानिक ओपन-वेट भाषा मॉडेल (DeepSeek, Qwen) तैनात करणे आणि चालवणे.",
+                card3_title: "UI/UX आणि व्हिज्युअल डिझाइन",
+                card3_desc: "डिजिटल उत्पादने, मोबाईल फोन ॲक्सेसरीज आणि प्रेझेंटेशन डेकसाठी स्वच्छ यूजर इंटरफेस, रेस्पॉन्सिव्ह लेआउट, सौंदर्यात्मक संतुलन आणि डिझाइन संकल्पनांची रचना करणे.",
+                card4_title: "ऑपरेटिंग सिस्टम्स आणि लिनक्स",
+                card4_desc: "मल्टी-ओएस सेटअप, लिनक्स कर्नल ट्यूनिंग, फाइल सिस्टम कॉन्फिगरेशन (BTRFS, EXT4), शेल स्क्रिप्टिंग आणि हार्डवेअर डायग्नोस्टिक्सवर प्रगत प्रशासकीय नियंत्रण.",
+                card5_title: "आयटी इन्फ्रास्ट्रक्चर आणि सपोर्ट",
+                card5_desc: "नेटवर्क केबलिंग, यूपीएस पॉवर मॅनेजमेंट, स्टोरेज सुरक्षा आणि क्रॉस-प्लॅटफॉर्म तांत्रिक समस्यानिवारणातील व्यावसायिक पार्श्वभूमीसह Google आयटी सपोर्ट प्रमाणित.",
+                card6_title: "स्थानिकीकरण आणि संप्रेषण",
+                card6_desc: "इंग्रजी, मराठी आणि हिंदी भाषेतील पारंगत बहुभाषिक क्षमता, जी अखंड तांत्रिक दस्तऐवजीकरण भाषांतर, समर्थन आणि सहकार्य सक्षम करते.",
+                skills_sub: "// तांत्रिक टूलकिट",
+                skills_title: "संरचित कौशल्य विभागणी",
+                skills_desc: "माझी कौशल्ये अत्याधुनिक लोकल एआय मॉडेल वर्कफ्लो आणि विचारपूर्वक UI/UX परस्परसंवाद डिझाइनसह मुख्य हार्डवेअर इंजिनिअरिंग आणि पीसी बिल्डिंग एकत्र करतात.",
+                skill_row1_title: "हार्डवेअर आणि गॅजेट्स",
+                skill_row1_desc: "कस्टम पीसी बिल्ड्स, मिनी-पीसी, थर्मल ट्यूनिंग",
+                skill_row2_title: "एआय आणि एलएलएम इंटिग्रेशन",
+                skill_row2_desc: "Ollama, LM Studio, प्रॉम्ट इंजिनिअरिंग",
+                skill_row3_title: "डिझाइन आणि लेआउट्स",
+                skill_row3_desc: "UI/UX तत्त्वे, व्हिज्युअल प्रेझेंटेशन",
+                log_cert_label: "प्रमाणपत्र:",
+                log_cert_value: "Google IT सपोर्ट प्रोफेशन",
+                log_mail_label: "ईमेल पत्ता:",
+                log_focus_label: "मुख्य फोकस:",
+                log_focus_value: "हार्डवेयर + लोकल AI + UI/UX",
+                contact_sub: "// संपर्क साधा",
+                contact_title: "चला जोडूया आणि सहकार्य करूया.",
+                contact_desc: "तुम्हाला प्रगत पीसी हार्डवेअर इंजिनिअरिंग, लोकल एलएलएम उपयोजन, युआय/युएक्स ऑप्टिमायझेशन किंवा आयटी इन्फ्रास्ट्रक्चर व्यवस्थापनाची आवश्यकता असो, मी कसा मूल्य वाढवू शकतो यावर चर्चा करूया.",
+                form_title: "थेट संदेश पाठवा",
+                form_name: "तुमचे नाव",
+                form_email: "ईमेल पत्ता",
+                form_message: "संदेश",
+                form_btn: "चौकशी पाठवा",
+                footer_rights: "© २०२६ रोहित पाटील. सर्व हक्क राखीव."
+            }
+        };
+
+        function switchLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            ['en', 'hi', 'mr'].forEach(l => {
+                const btn = document.getElementById(`lang-${l}`);
+                if (l === lang) {
+                    btn.className = "px-2 py-1 rounded bg-accent text-white font-bold transition-colors";
+                } else {
+                    btn.className = "px-2 py-1 rounded hover:text-accent transition-colors";
+                }
+            });
+
+            localStorage.setItem('preferred_lang', lang);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferred_lang');
+            if (savedLang && translations[savedLang]) {
+                switchLanguage(savedLang);
+            }
+        });
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             const loaderBar = document.getElementById('loader-bar');
@@ -504,10 +811,7 @@
         const group = new THREE.Group();
         scene.add(group);
 
-        // Create Torus Knot Geometry with Red Wireframe
         const geometry = new THREE.TorusKnotGeometry(1.2, 0.38, 100, 16);
-        
-        // Glossy dark base mesh
         const material = new THREE.MeshStandardMaterial({
             color: 0x050505,
             roughness: 0.2,
@@ -516,7 +820,6 @@
         const mesh = new THREE.Mesh(geometry, material);
         group.add(mesh);
 
-        // Red Wireframe overlay matching the reference image style
         const wireframeMaterial = new THREE.MeshBasicMaterial({
             color: 0xFF3B30,
             wireframe: true,
@@ -526,7 +829,6 @@
         const wireframeMesh = new THREE.Mesh(geometry, wireframeMaterial);
         group.add(wireframeMesh);
 
-        // Lighting setup to give specular highlights
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
 
@@ -538,7 +840,6 @@
         pointLight2.position.set(-3, -3, 2);
         scene.add(pointLight2);
 
-        // Mouse & Touch Drag Interaction
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
 
@@ -585,7 +886,6 @@
         let clock = new THREE.Clock();
         function animate() {
             requestAnimationFrame(animate);
-
             const elapsedTime = clock.getElapsedTime();
 
             if (!isDragging) {
